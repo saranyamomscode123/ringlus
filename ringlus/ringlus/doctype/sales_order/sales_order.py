@@ -288,4 +288,43 @@ def make_delivery_note(source_name, target_doc=None, skip_item_mapping=False):
 	target_doc = get_mapped_doc("Sales Order", source_name, mapper, target_doc, set_missing_values)
 
 	return target_doc
+@frappe.whitelist()
+def get_casual_leave(employee,from_date,to_date):
+    casual_leave = frappe.db.sql("""select count(leave_type) from tabAttendance where employee= %s and leave_type="Casual Leave" and attendance_date >= %s AND attendance_date <=%s""",(employee,from_date,to_date) ,as_dict=1)
+    return casual_leave
+
+
+
+@frappe.whitelist()
+def get_compensatory_off(employee,from_date,to_date):
+    compensatory_off = frappe.db.sql("""select count(leave_type) from tabAttendance where employee= %s and leave_type="Compensatory Off" and attendance_date >= %s AND attendance_date <=%s""",(employee,from_date,to_date) ,as_dict=1)
+    return compensatory_off
+
+
+
+@frappe.whitelist()
+def get_holidays(from_date,to_date):
+    hollidays = frappe.db.sql("""select count(holiday_date) from tabHoliday where holiday_date >=%s  AND holiday_date <=%s""",(from_date,to_date) ,as_dict=1)
+    return hollidays
+
+@frappe.whitelist()
+def get_present_days(employee,from_date,to_date):
+    present_days = frappe.db.sql("""select count(attendance_date) from tabAttendance 
+    where employee= %s 
+    and attendance_date >=%s  AND attendance_date <=%s 
+    and status="Present" """,(employee,from_date,to_date) ,as_dict=1)
+    return present_days
+    
+
+
+# @frappe.whitelist()
+# def get_payment_days(employee,start_date,end_date):
+#     payment_days = frappe.db.sql("""select present_days,leave_without_pay from `tabSalary Slip` where employee= %s and start_date >=%s AND end_date <=%s""",(employee,start_date,end_date) ,as_dict=1)
+#     return payment_days
+
+
+
+
+
+
 
